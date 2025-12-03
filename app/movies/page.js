@@ -1,11 +1,11 @@
-// app/movies/page.js
 "use client"
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import Link from 'next/link'
 import { genres } from '../data/moviesData'  // Importing our data
 import { useRouter, useSearchParams } from 'next/navigation'
 
-const Movies = () => {
+// 1. Rename your main component to "MoviesContent" (or any name)
+const MoviesContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const genereparam = searchParams.get("genre");
@@ -31,7 +31,7 @@ const Movies = () => {
   if(!movie) return <div className='text-white text-center mt-20'>Picking a movie...</div>
 
   return (
-    <div className='text-white flex flex-col justify-center w-full items-center px-4 md:px-0'> {/* RESPONSIVE CHANGE: padding on small screens */}
+    <div className='text-white flex flex-col justify-center w-full items-center px-4 md:px-0'> 
       <div className='mt-7 text-base md:text-xl opacity-60'>Can't decide? Let fate choose your film.</div>
 
       <div className='bg-[#161F32] h-auto min-h-[60vh] w-full max-w-[900px] md:max-w-[700px] rounded-xl mt-3 border border-white/10 shadow-[0_8px_25px_rgba(0,0,0,0.55),0_0_20px_rgba(255,255,255,0.03)] pb-8 p-4 md:p-6'>
@@ -47,7 +47,7 @@ const Movies = () => {
 
         {/* Movie Title */}
         <div className='flex justify-center mt-4 px-2'>
-          <h2 className='text-2xl md:text-4xl font-bold text-center wrap-break-word'>{movie.title}</h2> {/* RESPONSIVE CHANGE: break-words so long titles wrap */}
+          <h2 className='text-2xl md:text-4xl font-bold text-center wrap-break-word'>{movie.title}</h2> 
         </div>
 
         {/* Meta Info Row */}
@@ -70,7 +70,6 @@ const Movies = () => {
         </div>
 
         {/* Action Buttons */}
-        {/* RESPONSIVE CHANGE: column on small screens, row on md+ */}
         <div className='w-full flex flex-col md:flex-row sm:w-auto justify-center items-center gap-3 mt-6'>
           <div className='flex flex-col md:flex-row gap-3 items-center'>
             {/* Pick Another Button */}
@@ -89,7 +88,7 @@ const Movies = () => {
               target="_blank" 
               rel="noreferrer"
               className="flex items-center gap-2 p-3 px-6 font-bold rounded-xl cursor-pointer transition transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,165,0,0.5)]"
-              style={{ background: "linear-gradient(90deg,#FACC15,#FB923C)", color: "#000" }} // fallback gradient
+              style={{ background: "linear-gradient(90deg,#FACC15,#FB923C)", color: "#000" }} 
             >
               <img src="/icons8-ticket-48.png" alt="ticket" className='w-6 md:w-7' />
               <span>Watch Details</span>
@@ -98,6 +97,16 @@ const Movies = () => {
         </div>
       </div>
     </div>
+  )
+}
+
+// 2. Create a wrapper component using Suspense
+const Movies = () => {
+  return (
+    // This boundary tells Next.js: "If the URL parameters aren't ready yet, show this fallback"
+    <Suspense fallback={<div className='text-white text-center mt-20'>Loading...</div>}>
+      <MoviesContent />
+    </Suspense>
   )
 }
 
